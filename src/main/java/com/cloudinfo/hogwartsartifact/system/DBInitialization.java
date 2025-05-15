@@ -51,6 +51,7 @@ public class DBInitialization implements CommandLineRunner
 
         Wizard w1= new Wizard();
         w1.setName("Test w1");
+
         w1.setId("43564661");
         Wizard w2= new Wizard();
         w2.setName("Test w2");

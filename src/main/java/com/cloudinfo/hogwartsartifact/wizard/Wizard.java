@@ -19,7 +19,6 @@ import java.util.List;
 @Entity
 public class Wizard implements Serializable {
     @Id
-    //@GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String name;
 
@@ -33,5 +32,10 @@ public class Wizard implements Serializable {
 
     public Integer getNumberOfArtifacts() {
         return this.artifacts.size();
+    }
+
+    public void removeAllArtifacts() {
+        artifacts.forEach(item-> item.setOwner(null));
+        this.artifacts.clear();
     }
 }

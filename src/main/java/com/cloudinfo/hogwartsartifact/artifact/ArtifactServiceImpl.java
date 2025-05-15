@@ -1,7 +1,6 @@
 package com.cloudinfo.hogwartsartifact.artifact;
 
-import com.cloudinfo.hogwartsartifact.artifact.dto.ArtifactDto;
-import com.cloudinfo.hogwartsartifact.exception.ArtifactNotFoundException;
+import com.cloudinfo.hogwartsartifact.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ public class ArtifactServiceImpl implements ArtifactService{
 
     @Override
     public Artifact findById(String artifactId){
-        Artifact result=artifactRepository.findById(artifactId).orElseThrow(()-> new ArtifactNotFoundException(artifactId));
+        Artifact result=artifactRepository.findById(artifactId).orElseThrow(()-> new ResourceNotFoundException(artifactId));
 
         return result;
     }
@@ -50,13 +49,13 @@ public class ArtifactServiceImpl implements ArtifactService{
                     item.setDescription(artifactDto.getDescription());
                     item.setImageUrl(artifactDto.getImageUrl());
                     return artifactRepository.save(item);
-                }).orElseThrow(()-> new ArtifactNotFoundException(id));
+                }).orElseThrow(()-> new ResourceNotFoundException(id));
 
     }
 
     @Override
     public void deleteArtifact(String id) {
-        Artifact result=artifactRepository.findById(id).orElseThrow(()-> new ArtifactNotFoundException(id));
+        Artifact result=artifactRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException(id));
         artifactRepository.deleteById(result.getId());
     }
 

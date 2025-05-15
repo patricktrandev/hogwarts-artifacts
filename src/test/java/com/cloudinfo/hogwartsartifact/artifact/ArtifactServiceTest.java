@@ -3,11 +3,9 @@ package com.cloudinfo.hogwartsartifact.artifact;
 
 import com.cloudinfo.hogwartsartifact.artifact.converter.ArtifactDtoMapper;
 import com.cloudinfo.hogwartsartifact.artifact.converter.ArtifactMapper;
-import com.cloudinfo.hogwartsartifact.artifact.dto.ArtifactDto;
 import com.cloudinfo.hogwartsartifact.artifact.utils.IdWorker;
-import com.cloudinfo.hogwartsartifact.exception.ArtifactNotFoundException;
+import com.cloudinfo.hogwartsartifact.exception.ResourceNotFoundException;
 import com.cloudinfo.hogwartsartifact.wizard.Wizard;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,11 +13,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -149,7 +145,7 @@ class ArtifactServiceTest {
 
         given(artifactRepository.findById(id)).willReturn(Optional.empty());
 
-        org.junit.jupiter.api.Assertions.assertThrows(ArtifactNotFoundException.class, ()->{
+        org.junit.jupiter.api.Assertions.assertThrows(ResourceNotFoundException.class, ()->{
              artifactService.updateArtifact(id, a);
         });
 
@@ -179,13 +175,14 @@ class ArtifactServiceTest {
         a.setName("new artifact");
         a.setName("An visibility Cloak of new artifact");
         a.setImageUrl("imageUrl");
-        given(artifactRepository.findById(id)).willThrow(new ArtifactNotFoundException(id));
+        given(artifactRepository.findById(id)).willThrow(new ResourceNotFoundException(id));
 
 
-        org.junit.jupiter.api.Assertions.assertThrows(ArtifactNotFoundException.class, ()->{
+        org.junit.jupiter.api.Assertions.assertThrows(ResourceNotFoundException.class, ()->{
             artifactService.deleteArtifact(id);
         });
         verify(artifactRepository, times(1)).findById(id);
     }
+
 
 }
