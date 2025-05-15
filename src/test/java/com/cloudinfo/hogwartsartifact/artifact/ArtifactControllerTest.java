@@ -1,6 +1,6 @@
 package com.cloudinfo.hogwartsartifact.artifact;
 
-import com.cloudinfo.hogwartsartifact.exception.ArtifactNotFoundException;
+import com.cloudinfo.hogwartsartifact.exception.ResourceNotFoundException;
 import com.cloudinfo.hogwartsartifact.system.StatusCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -8,8 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
-import static org.mockito.Mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -19,14 +19,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
+@WebMvcTest(controllers = ArtifactController.class)
 class ArtifactControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -36,6 +35,8 @@ class ArtifactControllerTest {
     @Autowired
     private ObjectMapper objetcMapper;
 
+    @Value("${api.endpoint.base-url}")
+    private String path;
     List<Artifact> artifactList;
 
     @BeforeEach
@@ -73,7 +74,7 @@ class ArtifactControllerTest {
 
 
         //when
-        ResultActions response =mockMvc.perform(get("/api/v1/artifacts/{id}", id)
+        ResultActions response =mockMvc.perform(get(path+"/artifacts/{id}", id)
                 .accept(MediaType.APPLICATION_JSON));
         //then
         response.andDo(print())
@@ -88,16 +89,16 @@ class ArtifactControllerTest {
     void testFindArtifactByIdNotFound() throws Exception {
         //given
         String id="234235345";
-        BDDMockito.given(artifactService.findById(id)).willThrow(new ArtifactNotFoundException(id));
+        BDDMockito.given(artifactService.findById(id)).willThrow(new ResourceNotFoundException(id));
         //when
-        ResultActions response =mockMvc.perform(get("/api/v1/artifacts/{id}", id)
+        ResultActions response =mockMvc.perform(get(path+"/artifacts/{id}", id)
                 .accept(MediaType.APPLICATION_JSON));
         //then
         response.andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.flag").value(false))
                 .andExpect(jsonPath("$.code").value(StatusCode.NOT_FOUND))
-                .andExpect(jsonPath("$.message").value("Could not found artifact with Id "+id))
+                .andExpect(jsonPath("$.message").value("Could not found with Id "+id))
                 .andExpect(jsonPath("$.data").isEmpty());
         verify(artifactService, times(1)).findById(id);
     }
@@ -106,7 +107,7 @@ class ArtifactControllerTest {
         BDDMockito.given(artifactService.findAllArtifacts()).willReturn(artifactList);
 
         //when
-        ResultActions response=mockMvc.perform(get("/api/v1/artifacts"));
+        ResultActions response=mockMvc.perform(get(path+"/artifacts"));
 
         response.andDo(print())
                 .andExpect(status().isOk())
@@ -125,7 +126,7 @@ class ArtifactControllerTest {
         BDDMockito.given(artifactService.saveArtifact(ArgumentMatchers.any(Artifact.class))).willReturn(a);
 
         //when
-        ResultActions response=mockMvc.perform(post("/api/v1/artifacts").contentType(MediaType.APPLICATION_JSON)
+        ResultActions response=mockMvc.perform(post(path+"/artifacts").contentType(MediaType.APPLICATION_JSON)
                 .content(objetcMapper.writeValueAsString(a)));
 
         response.andDo(print())
@@ -151,7 +152,7 @@ class ArtifactControllerTest {
         BDDMockito.given(artifactService.updateArtifact(eq(id), any(Artifact.class))).willReturn(u);
 
         //when
-        ResultActions response=mockMvc.perform(put("/api/v1/artifacts/{id}",id).contentType(MediaType.APPLICATION_JSON)
+        ResultActions response=mockMvc.perform(put(path+"/artifacts/{id}",id).contentType(MediaType.APPLICATION_JSON)
                 .content(objetcMapper.writeValueAsString(a)));
 
         response.andDo(print())
@@ -170,10 +171,10 @@ class ArtifactControllerTest {
         a.setDescription("An visibility Cloak of new artifact");
         a.setImageUrl("imageUrl");
 
-        BDDMockito.given(artifactService.updateArtifact(eq(id), any(Artifact.class))).willThrow(new ArtifactNotFoundException(id));
+        BDDMockito.given(artifactService.updateArtifact(eq(id), any(Artifact.class))).willThrow(new ResourceNotFoundException(id));
 
         //when
-        ResultActions response=mockMvc.perform(put("/api/v1/artifacts/{id}",id).contentType(MediaType.APPLICATION_JSON)
+        ResultActions response=mockMvc.perform(put(path+"/artifacts/{id}",id).contentType(MediaType.APPLICATION_JSON)
                 .content(objetcMapper.writeValueAsString(a)));
 
         response.andDo(print())
@@ -194,7 +195,7 @@ class ArtifactControllerTest {
         BDDMockito.willDoNothing().given(artifactService).deleteArtifact(id);
 
         //when
-        ResultActions response=mockMvc.perform(delete("/api/v1/artifacts/{id}",id));
+        ResultActions response=mockMvc.perform(delete(path+"/artifacts/{id}",id));
 
         response.andDo(print())
                 .andExpect(status().isOk())
@@ -207,10 +208,10 @@ class ArtifactControllerTest {
     void givenArtifactId_whenDeleteArtifact_thenReturn404NotFound() throws Exception {
         String id="324324532-3724";
 
-        BDDMockito.doThrow(new ArtifactNotFoundException(id)).when(artifactService).deleteArtifact(id);
+        BDDMockito.doThrow(new ResourceNotFoundException(id)).when(artifactService).deleteArtifact(id);
 
         //when
-        ResultActions response=mockMvc.perform(delete("/api/v1/artifacts/{id}",id));
+        ResultActions response=mockMvc.perform(delete(path+"/artifacts/{id}",id));
 
         response.andDo(print())
                 .andExpect(status().isNotFound())

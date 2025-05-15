@@ -18,9 +18,14 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(ArtifactNotFoundException.class)
+    @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    Response handleArtifactNotFoundException(ArtifactNotFoundException ex){
+    Response handleArtifactNotFoundException(ResourceNotFoundException ex){
+        return new Response(false, StatusCode.NOT_FOUND, ex.getMessage());
+    }
+    @ExceptionHandler(ResourceAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    Response handleWizardNotFoundException(ResourceAlreadyExistException ex){
         return new Response(false, StatusCode.NOT_FOUND, ex.getMessage());
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
