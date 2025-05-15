@@ -1,11 +1,13 @@
 package com.cloudinfo.hogwartsartifact.wizard;
 
 import com.cloudinfo.hogwartsartifact.artifact.Artifact;
+import com.cloudinfo.hogwartsartifact.artifact.ArtifactRepository;
 import com.cloudinfo.hogwartsartifact.exception.ResourceAlreadyExistException;
 import com.cloudinfo.hogwartsartifact.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -22,12 +24,15 @@ import static org.mockito.BDDMockito.*;
 class WizardServiceTest {
     @Mock
     private WizardRepository wizardRepository;
+
+    private ArtifactRepository artifactRepository= mock(ArtifactRepository.class);
+    @InjectMocks
     private WizardServiceImpl wizardService;
 
 
     @BeforeEach
     void setUp() {
-        wizardService= new WizardServiceImpl(wizardRepository);
+        //wizardService= new WizardServiceImpl(wizardRepository);
 
     }
 
@@ -163,5 +168,33 @@ class WizardServiceTest {
            wizardService.deleteWizard(id);
         });
         verify(wizardRepository, times(1)).findById(id);
+    }
+    @Test
+    void givenArtifactIdAndWizardId_whenAssignArtifactToWizard_thenReturn200SuccessStatus(){
+        String id="32476235";
+
+        String artifactId="123242354325";
+        Artifact a= new Artifact();
+        a.setId("123242354325");
+        a.setName("new artifact");
+        a.setName("An visibility Cloak of new artifact");
+        a.setImageUrl("imageUrl");
+        Wizard w=new Wizard();
+        w.setId("32476234");
+        w.setName("New Wizard");
+        w.addArtifatc(a);
+
+        Wizard w1=new Wizard();
+        w1.setId("32476235");
+        w1.setName("New Wizard");
+
+       given(artifactRepository.findById("123242354325")).willReturn(Optional.of(a));
+       given(wizardRepository.findById("32476235")).willReturn(Optional.of(w1));
+
+        wizardService.assignToWizard(id, artifactId);
+//
+        assertThat(a.getOwner().getId()).isEqualTo("32476235");
+        assertThat(w1.getArtifacts()).contains(a);
+
     }
 }

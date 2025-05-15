@@ -34,7 +34,7 @@ public class WizardController {
 
         Wizard w=wizardService.findWizardByid(id);
 
-        return new ResponseEntity<>(new Response(true, StatusCode.SUCCESS,"Find one wizard successfully", w), HttpStatus.OK);
+        return new ResponseEntity<>(new Response(true, StatusCode.SUCCESS,"Find one wizard successfully",wizardMapper.convert(w)), HttpStatus.OK);
     }
 
     @PostMapping
@@ -43,7 +43,7 @@ public class WizardController {
         //System.out.println(saved.getName());
         //WizardDto result= wizardMapper.convert(saved);
 
-        return new ResponseEntity<>(new Response(true, StatusCode.SUCCESS,"Create wizard successfully", saved), HttpStatus.CREATED);
+        return new ResponseEntity<>(new Response(true, StatusCode.SUCCESS,"Create wizard successfully",wizardMapper.convert(saved)), HttpStatus.CREATED);
     }
     @PutMapping("/{id}")
     public ResponseEntity<Response> updateWizard(@Valid @RequestBody WizardDto wizardDto, @PathVariable String id){
@@ -51,7 +51,7 @@ public class WizardController {
         //System.out.println(saved.getName());
         //WizardDto result= wizardMapper.convert(saved);
 
-        return new ResponseEntity<>(new Response(true, StatusCode.SUCCESS,"Update wizard successfully", updated), HttpStatus.OK);
+        return new ResponseEntity<>(new Response(true, StatusCode.SUCCESS,"Update wizard successfully", wizardMapper.convert(updated)), HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<Response> deleteWizard( @PathVariable String id){
@@ -60,5 +60,17 @@ public class WizardController {
         //WizardDto result= wizardMapper.convert(saved);
 
         return new ResponseEntity<>(new Response(true, StatusCode.SUCCESS,"Delete wizard successfully"), HttpStatus.OK);
+    }
+    @PutMapping("/{id}/artifacts/{artifactId}")
+    public ResponseEntity<Response> assignArtifactToWizard(@PathVariable String id, @PathVariable String artifactId){
+        Wizard w=wizardService.assignToWizard(id, artifactId);
+
+        return new ResponseEntity<>(new Response(true, StatusCode.SUCCESS,"Assign artifact to wizard successfully",wizardMapper.convert(w)), HttpStatus.OK);
+    }
+    @PutMapping("/{id}/courses/{courseId}")
+    public ResponseEntity<Response> registerCourse(@PathVariable String id, @PathVariable String courseId){
+        Wizard w=wizardService.registerCourse(id, courseId);
+
+        return new ResponseEntity<>(new Response(true, StatusCode.SUCCESS,"Wizard register course successfully",wizardMapper.convert(w)), HttpStatus.OK);
     }
 }
