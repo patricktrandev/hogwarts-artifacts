@@ -161,4 +161,37 @@ class WizardControllerTest {
                 .andExpect(jsonPath("$.code").value(StatusCode.NOT_FOUND))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
+
+    @Test
+    void givenWizardIdAndArtifactId_whenAssignArtifactToWizard_thenReturn200Success() throws Exception {
+        String id="32476235";
+
+        String artifactId="123242354325";
+        Artifact a= new Artifact();
+        a.setId("123242354325");
+        a.setName("new artifact");
+        a.setName("An visibility Cloak of new artifact");
+        a.setImageUrl("imageUrl");
+        Wizard w=new Wizard();
+        w.setId("32476234");
+        w.setName("New Wizard");
+
+
+        Wizard w1=new Wizard();
+        w1.setId("32476235");
+        w1.setName("New Wizard");
+        w.addArtifatc(a);
+
+        BDDMockito.given(wizardService.assignToWizard(id, artifactId)).willReturn(w1);
+
+        //when
+        ResultActions response=mockMvc.perform(put("/api/v1/wizards/{id}/artifacts/{artifactId}",id, artifactId));
+
+        response.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.flag").value(true))
+                .andExpect(jsonPath("$.code").value(StatusCode.SUCCESS))
+                //.andExpect(jsonPath("$.message").value("Delete wizard successfully"))
+                .andExpect(jsonPath("$.data").isNotEmpty());
+    }
 }
