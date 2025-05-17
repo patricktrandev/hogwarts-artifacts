@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -33,7 +34,7 @@ class CourseServiceTest {
     void givenCourse_whenCreateCourse_thenReturn200Success() {
         Course c= new Course();
         c.setName("test course");
-        c.setId("3278463782");
+        c.setId(UUID.fromString("473a1ec4-a336-4592-a62f-290e828b4148"));
         c.setStartDate(LocalDate.parse("2025-05-11"));
         c.setEndDate(LocalDate.parse("2025-08-11"));
         c.setStatus(1);
@@ -53,7 +54,7 @@ class CourseServiceTest {
     void givenCourse_whenCreateCourse_thenReturn400AlreadyExist() {
         Course c= new Course();
         c.setName("test course");
-        c.setId("3278463782");
+        c.setId(UUID.fromString("473a1ec4-a336-4592-a62f-290e828b4148"));
         c.setStartDate(LocalDate.parse("2025-05-11"));
         c.setEndDate(LocalDate.parse("2025-08-11"));
         c.setStatus(1);

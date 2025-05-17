@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -16,7 +17,7 @@ public class CourseDtoMapper implements Converter<CourseDto, Course> {
     @Override
     public Course convert(CourseDto source) {
         Course course= new Course();
-        course.setId(source.id());
+        course.setId(UUID.fromString(String.valueOf(source.id())));
         course.setName(source.name());
         course.setStartDate(source.startDate());
         course.setEndDate(source.endDate());

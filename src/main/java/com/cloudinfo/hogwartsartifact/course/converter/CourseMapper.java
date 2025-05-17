@@ -17,7 +17,7 @@ public class CourseMapper implements Converter<Course, CourseDto> {
     @Override
     public CourseDto convert(Course source) {
 
-        CourseDto courseDto= new CourseDto(source.getId(),
+        CourseDto courseDto= new CourseDto(String.valueOf(source.getId()),
                 source.getName(),
                 source.getStartDate(),
                 source.getEndDate(),

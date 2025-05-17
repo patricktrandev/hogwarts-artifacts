@@ -2,11 +2,18 @@ package com.cloudinfo.hogwartsartifact.system;
 
 import com.cloudinfo.hogwartsartifact.artifact.Artifact;
 import com.cloudinfo.hogwartsartifact.artifact.ArtifactRepository;
+import com.cloudinfo.hogwartsartifact.course.Course;
+import com.cloudinfo.hogwartsartifact.course.CourseRepository;
+import com.cloudinfo.hogwartsartifact.account.model.Role;
+import com.cloudinfo.hogwartsartifact.account.repository.RoleRepository;
 import com.cloudinfo.hogwartsartifact.wizard.Wizard;
 import com.cloudinfo.hogwartsartifact.wizard.WizardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.HashSet;
 
 @Component
 @RequiredArgsConstructor
@@ -14,6 +21,8 @@ public class DBInitialization implements CommandLineRunner
 {
     private final ArtifactRepository artifactRepository;
     private final WizardRepository wizardRepository;
+    private final RoleRepository roleRepository;
+    private final CourseRepository courseRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -71,5 +80,28 @@ public class DBInitialization implements CommandLineRunner
         wizardRepository.save(w3);
 
         artifactRepository.save(a5);
+
+        Role r= new Role();
+        r.setName("ADMIN");
+        Role r1= new Role();
+        r1.setName("USER");
+        roleRepository.save(r);
+        roleRepository.save(r1);
+
+        Course c= new Course();
+        c.setName("test course");
+
+        c.setStartDate(LocalDate.parse("2025-05-11"));
+        c.setEndDate(LocalDate.parse("2025-08-11"));
+        c.setStatus(1);
+        c.setWizards(new HashSet<>());
+        Course c1= new Course();
+        c1.setName("test course 2");
+
+        c1.setStartDate(LocalDate.parse("2025-03-12"));
+        c1.setEndDate(LocalDate.parse("2025-05-12"));
+        c1.setStatus(1);
+        c1.setWizards(new HashSet<>());
+        courseRepository.save(c1);
     }
 }
