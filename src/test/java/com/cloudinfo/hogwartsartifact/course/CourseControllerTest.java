@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -51,7 +52,7 @@ class CourseControllerTest {
     void givenCourse_whenCreateCourse_thenReturn200Success() throws Exception {
         Course c= new Course();
         c.setName("test course");
-        c.setId("3278463782");
+        c.setId(UUID.fromString("473a1ec4-a336-4592-a62f-290e828b4148"));
         c.setStartDate(LocalDate.parse("2025-05-11"));
         c.setEndDate(LocalDate.parse("2025-08-11"));
         c.setStatus(1);
@@ -69,12 +70,12 @@ class CourseControllerTest {
     void givenCourse_whenFindById_thenReturn200Success() throws Exception {
         Course c= new Course();
         c.setName("test course");
-        c.setId("3278463782");
+        c.setId(UUID.fromString("473a1ec4-a336-4592-a62f-290e828b4148"));
         c.setStartDate(LocalDate.parse("2025-05-11"));
         c.setEndDate(LocalDate.parse("2025-08-11"));
         c.setStatus(1);
         c.setWizards(new HashSet<>());
-        given(courseService.findCourseById(c.getId())).willReturn(c);
+        given(courseService.findCourseById(String.valueOf(c.getId()))).willReturn(c);
         ResultActions response= mockMvc.perform(get("/api/v1/courses/{id}",c.getId()));
         response.andDo(print())
                 .andExpect(status().isOk())
@@ -85,16 +86,16 @@ class CourseControllerTest {
     void givenCourse_whenFindById_thenReturn400() throws Exception {
         Course c= new Course();
         c.setName("test course");
-        c.setId("3278463782");
+        c.setId(UUID.fromString("473a1ec4-a336-4592-a62f-290e828b4148"));
         c.setStartDate(LocalDate.parse("2025-05-11"));
         c.setEndDate(LocalDate.parse("2025-08-11"));
         c.setStatus(1);
         c.setWizards(new HashSet<>());
-        given(courseService.findCourseById(c.getId())).willThrow(new ResourceNotFoundException(c.getId()));
+        given(courseService.findCourseById(String.valueOf(c.getId()))).willThrow(new ResourceNotFoundException(String.valueOf(c.getId())));
         ResultActions response= mockMvc.perform(get("/api/v1/courses/{id}",c.getId()));
         response.andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Could not found with Id 3278463782"))
+                .andExpect(jsonPath("$.message").value("Could not found with Id "+String.valueOf(c.getId())))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
     @Test
@@ -102,14 +103,14 @@ class CourseControllerTest {
         List<Course> courseList= new ArrayList<>();
         Course c= new Course();
         c.setName("test course");
-        c.setId("3278463782");
+        c.setId(UUID.fromString("473a1ec4-a336-4592-a62f-290e828b4148"));
         c.setStartDate(LocalDate.parse("2025-05-11"));
         c.setEndDate(LocalDate.parse("2025-08-11"));
         c.setStatus(1);
         c.setWizards(new HashSet<>());
         Course c1= new Course();
         c1.setName("test course");
-        c1.setId("3278463782");
+        c.setId(UUID.fromString("473a1ec4-a336-4592-a62f-290e828b4148"));
         c1.setStartDate(LocalDate.parse("2025-05-11"));
         c1.setEndDate(LocalDate.parse("2025-08-11"));
         c1.setStatus(1);
