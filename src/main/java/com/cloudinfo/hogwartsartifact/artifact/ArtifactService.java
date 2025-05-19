@@ -1,6 +1,5 @@
 package com.cloudinfo.hogwartsartifact.artifact;
 
-import com.cloudinfo.hogwartsartifact.artifact.dto.ArtifactDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,5 +1,7 @@
 package com.cloudinfo.hogwartsartifact.system;
 
+import com.cloudinfo.hogwartsartifact.account.model.Account;
+import com.cloudinfo.hogwartsartifact.account.service.AccountService;
 import com.cloudinfo.hogwartsartifact.artifact.Artifact;
 import com.cloudinfo.hogwartsartifact.artifact.ArtifactRepository;
 import com.cloudinfo.hogwartsartifact.course.Course;
@@ -23,6 +25,7 @@ public class DBInitialization implements CommandLineRunner
     private final WizardRepository wizardRepository;
     private final RoleRepository roleRepository;
     private final CourseRepository courseRepository;
+    private final AccountService accountService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -103,5 +106,12 @@ public class DBInitialization implements CommandLineRunner
         c1.setStatus(1);
         c1.setWizards(new HashSet<>());
         courseRepository.save(c1);
+
+        Account user= new Account();
+        user.setPassword("hellouser");
+        user.setUsername("test hello");
+        user.setEmail("test123@gmail.com");
+        accountService.createAccount(user);
+
     }
 }

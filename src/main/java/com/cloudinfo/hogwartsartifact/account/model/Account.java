@@ -26,11 +26,11 @@ public class Account extends BaseEntity{
     private String username;
     private String email;
     private String password;
-    private String type;
+    private String role;
     private boolean enabled;
 
     public int getNumberOfRoles(){
-        String[] roles= this.type.split("_");
+        String[] roles= this.role.split(" ");
         return roles.length;
     }
 
