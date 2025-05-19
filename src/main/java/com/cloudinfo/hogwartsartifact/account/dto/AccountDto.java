@@ -15,7 +15,7 @@ public record AccountDto(
         @NotEmpty(message = "Email is required")
         @Email(message = "Please use a correct format of email")
         String email,
-        String type,
+        String role,//set<string> roles
         boolean enabled,
         int numberOfRoles,
         @JsonProperty("created_at")

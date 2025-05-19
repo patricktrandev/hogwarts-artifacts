@@ -3,6 +3,8 @@ package com.cloudinfo.hogwartsartifact.exception;
 import com.cloudinfo.hogwartsartifact.system.Response;
 import com.cloudinfo.hogwartsartifact.system.StatusCode;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 
@@ -27,6 +29,11 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     Response handleWizardNotFoundException(ResourceAlreadyExistException ex){
         return new Response(false, StatusCode.NOT_FOUND, ex.getMessage());
+    }
+    @ExceptionHandler({UsernameNotFoundException.class, BadCredentialsException.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    Response handleAuthException(Exception ex){
+        return new Response(false, StatusCode.UNAUTHORIZED, "username or password is incorrect");
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

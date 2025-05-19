@@ -20,7 +20,7 @@ public class AccountMapper implements Converter<Account, AccountDto> {
                 String.valueOf(source.getId()),
                 source.getUsername(),
                 source.getEmail(),
-                source.getType(),
+                source.getRole(),
                 source.isEnabled(),
                 source.getNumberOfRoles(),
                 source.getCreatedAt()!=null?source.getCreatedAt():null,

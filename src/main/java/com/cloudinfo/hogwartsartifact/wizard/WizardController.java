@@ -27,7 +27,7 @@ public class WizardController {
 
         List<Wizard> saved=wizardService.findAllWizards();
         List<WizardDto> dtoList= saved.stream().map(wizardMapper::convert).collect(Collectors.toList());
-        return new ResponseEntity<>(new Response(true, StatusCode.SUCCESS,"Find all wizard successfully", saved), HttpStatus.OK);
+        return new ResponseEntity<>(new Response(true, StatusCode.SUCCESS,"Find all wizard successfully", dtoList), HttpStatus.OK);
     }
     @GetMapping("/{id}")
     public ResponseEntity<Response> findWizard(@PathVariable String id){
